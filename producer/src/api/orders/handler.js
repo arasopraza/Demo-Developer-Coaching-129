@@ -19,7 +19,7 @@ class ProductsHandler {
       targetEmail: userEmail.email,
     };
 
-    await this._producerService.sendMessage('order:confirm', JSON.stringify(message));
+    // Todo 2
 
     const response = h.response({
       status: 'success',

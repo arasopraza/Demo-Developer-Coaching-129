@@ -9,14 +9,7 @@ const init = async () => {
   const mailSender = new MailSender();
   const listener = new Listener(orderService, mailSender);
 
-  const connection = await amqp.connect(process.env.RABBITMQ_SERVER);
-  const channel = await connection.createChannel();
-
-  await channel.assertQueue('order:confirm', {
-    durable: true,
-  });
-
-  channel.consume('order:confirm', listener.listen, { noAck: true });
+  // Todo 3
 };
 
 init();
