@@ -1,5 +1,7 @@
 // mengimpor dotenv dan menjalankan konfigurasinya
 require('dotenv').config();
+const path = require('path');
+const Inert = require('@hapi/inert');
 
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
@@ -18,6 +20,7 @@ const TokenManager = require('./tokenize/TokenManager');
 // products
 const products = require('./api/products');
 const ProductsService = require('./services/ProductsService');
+const StorageService = require('./services/StorageService');
 
 // orders
 const orders = require('./api/orders');
@@ -29,6 +32,7 @@ const init = async () => {
   const authenticationsService = new AuthenticationsService();
   const productsService = new ProductsService();
   const ordersService = new OrdersService();
+  const storageService = new StorageService(path.resolve(__dirname, 'api/products/file/images'));
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -53,7 +57,10 @@ const init = async () => {
       options: {
         permissions: ['ADMIN', 'USER']
       }
-    }
+    },
+    {
+      plugin: Inert,
+    },
   ]);
 
   // mendefinisikan strategy autentikasi jwt
@@ -93,7 +100,8 @@ const init = async () => {
     {
       plugin: products,
       options: {
-        service: productsService
+        productService: productsService,
+        storageService: storageService,
       }
     },
     {
